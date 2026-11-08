@@ -36,3 +36,31 @@ dist
 **/coverage/
 **/*.tsbuildinfo
 **/deployments/localhost/
+
+# Java backend and local working files
+# Local runtime data and build output
+.escrow-event-index/
+.gradle/
+build/
+*.log
+
+# Local credentials
+.env
+.env.*
+!.env.example
+application-local.properties
+*.jks
+*.p12
+*.pem
+
+# Editor and temporary files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+~$*
+tmp/
+
+# Local assistant workspace
+.codex/
+.agents/
