@@ -29,6 +29,11 @@ public class EscrowController {
     @GetMapping("/orders")
     public List<EscrowService.CreatedOrderView> orders() { return service.orders(); }
 
+    @GetMapping("/orders/{id}/events")
+    public List<com.wetech.demo.web3j.service.EscrowEventIndexService.EventView> events(@PathVariable("id") String id) {
+        return service.events(id);
+    }
+
     @PostMapping("/orders/{id}/resolve")
     public EscrowService.ReceiptView resolve(@PathVariable("id") String id,
                                              @RequestParam("sellerWins") String sellerWins) {

@@ -37,12 +37,13 @@ public class EscrowService {
     private final TransactionManager transactions;
     private final ContractGasProvider gas;
     private final BigInteger chainId;
+    private final EscrowEventIndexService eventIndex;
     private final long pollInterval;
     private final int pollAttempts;
     private final ReentrantLock writes = new ReentrantLock();
     private volatile Context current;
 
-    public EscrowService(Web3j web3j, TransactionManager transactions, ContractGasProvider gas,
+    public EscrowService(Web3j web3j, TransactionManager transactions, ContractGasProvider gas, EscrowEventIndexService eventIndex,
                          @Value("${web3j.chain-id:60600}") long chainId,
                          @Value("${web3j.receipt-poll-interval-ms:1000}") long pollInterval,
                          @Value("${web3j.receipt-poll-attempts:40}") int pollAttempts) {
@@ -50,6 +51,7 @@ public class EscrowService {
         this.web3j = web3j;
         this.transactions = transactions;
         this.gas = gas;
+        this.eventIndex = eventIndex;
         this.chainId = BigInteger.valueOf(chainId);
         this.pollInterval = pollInterval;
         this.pollAttempts = pollAttempts;
@@ -117,28 +119,24 @@ public class EscrowService {
         return rpc(() -> {
             checkChain();
             BigInteger head = checked(web3j.ethBlockNumber().send()).getBlockNumber();
-            List<Log> logs = new ArrayList<>();
-            for (BigInteger start = context.fromBlock; start.compareTo(head) <= 0; start = start.add(BigInteger.TEN)) {
-                BigInteger end = start.add(BigInteger.valueOf(9)).min(head);
-                EthFilter filter = new EthFilter(DefaultBlockParameter.valueOf(start), DefaultBlockParameter.valueOf(end), context.address);
-                filter.addSingleTopic(EventEncoder.encode(Escrow.ORDERCREATED_EVENT));
-                EthLog response = checked(web3j.ethGetLogs(filter).send());
-                if (response.getLogs() == null) throw new IOException("Missing log result");
-                for (EthLog.LogResult<?> result : response.getLogs()) {
-                    if (!(result.get() instanceof Log log)) throw new IOException("Invalid log result");
-                    if (!context.address.equalsIgnoreCase(log.getAddress())) throw new IOException("Log address mismatch");
-                    if (!log.isRemoved()) logs.add(log);
-                }
+            return eventIndex.events(chainId, context.address, context.fromBlock, head).stream()
+                    .filter(event -> event.eventName().equals("OrderCreated"))
+                    .map(event -> new CreatedOrderView(event.id(), event.parameters().get("buyer"), event.parameters().get("seller"),
+                            event.parameters().get("amount"), event.blockNumber(), event.transactionHash())).toList();
+        });
+    }
+
+    public List<EscrowEventIndexService.EventView> events(String inputId) {
+        BigInteger id = unsigned(inputId, "id");
+        Context context = required();
+        return rpc(() -> {
+            checkChain();
+            if (id.compareTo(context.contract.orderCount().send()) >= 0) {
+                throw new EscrowApiException(404, "ORDER_NOT_FOUND", "Order does not exist");
             }
-            logs.sort(Comparator.comparing(Log::getBlockNumber).thenComparing(Log::getTransactionIndex).thenComparing(Log::getLogIndex));
-            Map<String, CreatedOrderView> unique = new LinkedHashMap<>();
-            for (Log log : logs) {
-                Escrow.OrderCreatedEventResponse event = Escrow.getOrderCreatedEventFromLog(log);
-                unique.putIfAbsent(log.getTransactionHash() + ":" + log.getLogIndex(),
-                        new CreatedOrderView(event.id.toString(), event.buyer, event.seller, event.amount.toString(),
-                                log.getBlockNumber().toString(), log.getTransactionHash()));
-            }
-            return List.copyOf(unique.values());
+            BigInteger head = checked(web3j.ethBlockNumber().send()).getBlockNumber();
+            return eventIndex.events(chainId, context.address, context.fromBlock, head).stream()
+                    .filter(event -> event.id().equals(id.toString())).toList();
         });
     }
 

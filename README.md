@@ -2,7 +2,7 @@
 
 组长：武钰斐。核心开发：武钰斐、苏佳豪。截止日期：2026年11月8日；内部交付目标：11月7日晚。
 
-**当前已核验：A路线后端已导入，六个基础接口和测试网正常收货、争议退款、错误状态仲裁流程已完成验收；22项本地测试通过。其余路线和加分项以各自代码、测试及真实交易记录为准。**
+**当前已核验：A路线后端已导入，六个基础接口和测试网正常收货、争议退款、错误状态仲裁流程已完成验收；33项本地测试通过。其余路线和加分项以各自代码、测试及真实交易记录为准。**
 
 完整任务、评分证据、接口约定、测试场景和16项任务详见 [执行计划](docs/PROJECT_PLAN.md)。执行计划记载的是安排，完成状态以实际PR、测试和链上证据为准。
 
@@ -69,7 +69,7 @@ Set-Location .\backend
 Set-Location ..
 ```
 
-首次构建需要联网下载Gradle、Solidity编译器及依赖；缓存齐全后可加`--offline`。Windows中文路径所需的编码配置已保存在`backend/gradle.properties`中。本机已验证编译、封装生成及打包成功，22项测试实际执行通过；尚不能据此替代组员在全新clone中的复现检查。
+首次构建需要联网下载Gradle、Solidity编译器及依赖；缓存齐全后可加`--offline`。Windows中文路径所需的编码配置已保存在`backend/gradle.properties`中。本机已验证编译、封装生成及打包成功，33项测试实际执行通过；尚不能据此替代组员在全新clone中的复现检查。
 
 ### A路线环境变量与启动
 
@@ -109,7 +109,7 @@ Invoke-RestMethod -Method Get -Uri "http://localhost:8080/api/escrow/orders/1" |
 Invoke-RestMethod -Method Get -Uri "http://localhost:8080/api/escrow/orders" | ConvertTo-Json -Depth 6
 ```
 
-验收完成后的状态是订单0 `Completed`、订单1 `Refunded`；报告4A-6的`Paid`/`Disputed`是仲裁前的真实快照。列表从部署块起按最多10个区块一段扫描`OrderCreated`，当前没有增量缓存，可能比详情查询慢。POTOS历史`eth_getCode`返回当前代码，因此加载时改用创建交易及成功回执核对真实部署区块。
+验收完成后的状态是订单0 `Completed`、订单1 `Refunded`；报告4A-6的`Paid`/`Disputed`是仲裁前的真实快照。列表从部署块起按最多10个区块一段扫描订单事件，并从共享事件索引派生创建列表；首次查询较慢，后续增量续扫，缓存落盘支持重启恢复。POTOS历史`eth_getCode`返回当前代码，因此加载时改用创建交易及成功回执核对真实部署区块。
 
 | 方法 | 路径 | 参数及用途 |
 |---|---|---|
@@ -118,6 +118,7 @@ Invoke-RestMethod -Method Get -Uri "http://localhost:8080/api/escrow/orders" | C
 | GET | `/api/escrow/address` | 查询已加载地址、arbiter、fromBlock、chainId |
 | GET | `/api/escrow/orders/{id}` | 查询单笔订单，金额、时间、ID用字符串，status为文字 |
 | GET | `/api/escrow/orders` | 从创建事件重建订单列表 |
+| GET | `/api/escrow/orders/{id}/events` | 按区块、交易及日志序号返回该订单全部适用事件，使用共享增量索引 |
 | POST | `/api/escrow/orders/{id}/resolve` | `sellerWins=true`支付卖家，`false`退款买家；会发送交易，仅链上仲裁人可成功裁决争议单 |
 
 仲裁成功返回交易哈希、区块、status、gasUsed；已上链回滚返回HTTP 422及失败回执；未知提交或确认结果返回503，不自动重播。错误参数400、未加载409、订单不存在404。`load`返回的交易字段为null是正常的，因为加载没有新交易。本组的两条业务流程已经结束，重复写操作不能用于重现原有交易哈希。
@@ -134,7 +135,7 @@ Invoke-RestMethod -Method Get -Uri "http://localhost:8080/api/escrow/orders" | C
 
 任意使用者均可查询公开合约；若需要在已有实例上执行仲裁，签名账户必须与该实例的arbiter一致。新测试应由使用者部署自己的实例并记录真实地址及回执。
 
-A路线原始截图及公开回执记录见[证据目录](docs/evidence/A/)，说明题材料见[报告草稿](docs/report-route-A-answers.md)。[A路线整体检查记录](docs/evidence/A/route-A-review-2026-11-08.md)记录检查时发现的报告错图及共享文档待办；后续修正以最新提交为准。订单时间线接口是独立加分项，当前基础列表不代表该加分已完成。
+A路线原始截图及公开回执记录见[证据目录](docs/evidence/A/)，说明题材料见[报告草稿](docs/report-route-A-answers.md)。[A路线整体检查记录](docs/evidence/A/route-A-review-2026-11-08.md)记录检查时发现的报告错图及共享文档待办；后续修正以最新提交为准。订单时间线实现及独立加分留证步骤见[时间线说明](docs/route-A-timeline.md)；真实只读查询记录见证据目录，报告截图由使用者采集。
 
 ### A路线真实交易台账
 
@@ -169,3 +170,8 @@ A路线已有证据位于`docs/evidence/A/`，真实交易台账见本页；其�
 原始截图保持可核对。A需4A-1至4A-8和6道解释，B需4B-1至4B-6和5道解释，重入需4C-1至4C-3；五项加分各附独立说明和证据。报告末尾必须有真实的AI使用说明，记录工具、用途、实际问题及发现/修正过程。
 
 按日更新进展；测试、截图、链上回执尚未取得时，不将对应任务标为完成。
+
+
+## 重入挑战源码归档
+
+已将本次实际使用的三份合约原样归档至[`contracts/reentrancy/`](contracts/reentrancy/)，并以Solidity 0.8.20 / Paris验证编译成功。两笔既有攻击交易已只读核验，原始截图与公开回执位于[`docs/evidence/C/`](docs/evidence/C/)。源码行为、地址、交易及验证范围见[重入挑战说明](docs/reentrancy.md)。本次未新增本地EVM回归测试，也未重新部署或执行攻击。

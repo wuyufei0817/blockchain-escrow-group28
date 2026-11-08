@@ -1,0 +1,2 @@
+# Runtime event checkpoints contain public chain data and are regenerated locally.
+.escrow-event-index/
