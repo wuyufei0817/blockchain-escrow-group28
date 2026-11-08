@@ -1,72 +1,120 @@
 # 第28组：区块链托管交易应用
 
-组长：武钰斐。核心开发：武钰斐、苏佳豪。截止日期：2026年11月8日；内部交付目标：11月7日晚。
+本项目基于 Scaffold-ETH 2，为实验三的 ERC-20 托管合约提供订单页面。买家通过钱包创建订单并授权、付款；买卖双方可发起争议；仲裁人使用本人钱包裁决。页面按当前账户及订单状态显示可执行操作。
 
-**当前状态：规划和协作仓库准备完成，业务代码尚未导入；不能据此认为功能已经完成。**
+组长：武钰斐，202492451119，计科1班。组员：苏佳豪、杨燊杰。
 
-完整任务、评分证据、接口约定、测试场景和16项任务详见 [执行计划](docs/PROJECT_PLAN.md)。计划中的新文件均为待创建内容，完成状态以实际PR、测试和链上证据为准。
+当前提交包含已完成的路线 B、合约源码、自动化测试及本组验收记录。路线 A 由苏佳豪后续通过 PR 提交，合并后补充后端启动说明；本版本不包含 Spring Boot 后端。
 
-## 交付范围
+## 环境与启动
 
-- 必做路线B：Next.js页面实现订单列表、创建、approve后deposit、确认收货、争议、仲裁和角色提示。
-- 完整路线A：Spring Boot + Web3j，六个REST接口、事件重建订单列表、服务器账户仲裁。
-- 五项加分全部覆盖：完整另一条路线、重入复现与修复、订单时间线、卖家发货状态、两人一致的多签仲裁。
-- README运行说明、环境变量说明、真实交易台账、全部规定截图、解释题、实际分工和AI使用说明。
-
-评分文件07列出的五项加分名义合计21分，累计最多计20分，总评封顶100分；教程04写最多10分，提交前确认教师最终口径。两份材料的差异不改变本项目覆盖全部五项加分的目标。
-
-## 计划分工
-
-| 成员 | 负责范围 | 验收产出 |
-|---|---|---|
-| 武钰斐 | 组长、前端页面、订单交互与角色、时间线、EscrowPlus发货和双人仲裁、集成 | B路线和扩展截图/测试、报告整合、最终提交 |
-| 苏佳豪 | backend全部、Java合约封装、六接口与事件查询、漏洞金库/攻击/修复及测试 | A路线与重入证据，交叉核对交易及README |
-| 杨燊杰 | 少量真实卖家角色操作、截图核对与验收记录 | 本人操作记录、截图编号和实际审阅记录 |
-
-这是待执行安排；报告中的完成分工须依据本人实际操作和提交记录填写。
-
-## 11月1日至8日安排
-
-| 日期 | 主要工作 | 当天出口 |
-|---|---|---|
-| 11月1日 | 清理导入旧工程，建立可构建代码基线；fork与接口/地址约定 | 两人环境可用、首个协作PR、角色会话预约 |
-| 11月2—3日 | 武做B前端；苏做A后端，双方本地测试 | 两路线基础代码完成，事件分段与错误路径通过 |
-| 11月4日 | 两路线测试网完整流程和三角色验收 | 4A/4B证据、真实哈希、baseline-complete |
-| 11月5—6日 | 武做发货/多签页面合约；苏做重入与修复，完成时间线证据 | 五项加分均有独立成功与失败证据 |
-| 11月7日 | 干净环境复现、报告、AI说明、台账、答辩演练 | 19:00冻结功能，21:00内部交付 |
-| 11月8日 | 最后核对与按教师时刻提交 | 保存提交版本及记录，预留缓冲 |
-
-## 苏佳豪如何加入
-
-1. 在本仓库右上角点击 **Fork**，创建到本人账号；无需先成为主仓库协作者。
-2. clone自己的fork。若此时只有规划文档，先等待/同步11月1日的代码基线，再开始开发。
-3. 在自己的clone中配置上游并创建功能分支：
+使用 Node.js 20（至少 20.18.3）、Corepack 和仓库内固定的 Yarn 3.2.3。以下命令在 Linux、WSL 或 macOS 终端运行；Windows 用户建议在 WSL 中将仓库克隆到 Linux 文件系统。
 
 ```bash
-git remote add upstream https://github.com/wuyufei0817/blockchain-escrow-group28.git
-git fetch upstream
-git switch -c feat/su-backend upstream/main
+git clone https://github.com/wuyufei0817/blockchain-escrow-group28.git
+cd blockchain-escrow-group28
+corepack enable
+yarn install --immutable
+yarn start
 ```
 
-4. 在本人分支开发，push到自己的`origin`，发PR到本仓库的`main`。武钰斐审查、验收、合并。
-5. 每日开始前fetch上游，在干净工作区将`upstream/main`合入功能分支；解决冲突后再开发。PR说明修改范围、运行过的检查、截图/回执位置。
+打开 <http://localhost:3000/escrow>，连接 MetaMask，切换到 POTOS Testnet。若 3000 端口已占用，以终端显示的端口为准。
 
-武负责前端与扩展合约，苏负责`backend/`和重入合约；共享配置、锁文件及生成ABI由武统一整合。仓库公开可读，向主仓库贡献仍通过PR。
+本页面读取实验三已部署的合约，不需要先启动本地链，也不需要运行 deploy。不要为了查看现有订单重新部署或覆盖 `packages/nextjs/contracts/deployedContracts.ts`。
 
-参考：[GitHub官方fork说明](https://docs.github.com/en/pull-requests/how-tos/work-with-forks/fork-a-repo)。
+| 网络配置 | 值 |
+|---|---|
+| 网络 | POTOS Testnet |
+| Chain ID | 60600 |
+| RPC | https://rpc-testnet.potos.hk |
+| 原生币 | POT |
+| 浏览器 | https://scan-testnet.potos.hk |
 
-## 工程起点与运行信息
+## 环境变量
 
-沿用已有课程工程：Yarn 3.2.3、Node >=20.18.3、JDK 21、Spring Boot 3.2.3、Web3j 4.14.0。前端/合约采用现有Yarn workspace，Java计划放在`backend/`。不为本作业顺便升级现有框架。
+B 页面使用 MetaMask 扩展连接时无需配置私钥环境变量。签名在成员自己的钱包中完成。可选配置写在 `packages/nextjs/.env.local`，参考同目录 `.env.example`：
 
-代码导入前本仓库无法启动应用。T01完成后补齐并验证完整安装、运行和测试命令；本节当前不是已验证的运行说明。
+| 变量 | 用途 |
+|---|---|
+| `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | 自有 WalletConnect 项目 ID；使用该连接方式时配置 |
+| `NEXT_PUBLIC_ALCHEMY_API_KEY` | Scaffold-ETH 通用网络服务配置；POTOS 使用上表 RPC |
 
-环境变量约定：A后端使用本机`WEB3J_PRIVATE_KEY`；前端连接用户钱包，前端公开变量只放链/RPC等公开配置。`.env`及真实私钥不提交，连示例工程自带的公开测试私钥也要移除。PLUS的两个仲裁钱包分别由两名成员持有，不复用A后端账户。
+只有另行部署合约时才需要在 `packages/hardhat/.env` 中设置 `DEPLOYER_PRIVATE_KEY`。该文件不提交。`ALCHEMY_API_KEY` 用于可选分叉网络，`ETHERSCAN_V2_API_KEY` 用于相应浏览器验证，本组现有 B 页面验收不需要二者。
 
-## 证据与完成标准
+Hardhat 默认为本地测试网络，配置中没有示例部署私钥；未提供部署私钥时，外部网络账户列表为空。账号管理脚本解密后的 `__RUNTIME_DEPLOYER_PRIVATE_KEY` 仅用于进程运行时。
 
-后续证据计划放在`docs/evidence/A/`、`B/`、`C/`、`bonuses/`；真实交易记入`docs/transactions.md`。每项写清路线、合约、真实订单ID、操作人/角色、完整哈希、区块、状态及金额，不混用不同部署实例的数据。
+## 合约与账户
 
-原始截图保持可核对。A需4A-1至4A-8和6道解释，B需4B-1至4B-6和5道解释，重入需4C-1至4C-3；五项加分各附独立说明和证据。报告末尾必须有真实的AI使用说明，记录工具、用途、实际问题及发现/修正过程。
+| 角色或合约 | 地址 |
+|---|---|
+| B Escrow（实验三原合约） | `0xbdB2Dfcd8A9Cd903848a1B9d95416b85178f05Af` |
+| WYFToken（18 位精度） | `0x81777CEeA8CC59fa88ABcee9DC19970217Cf8637` |
+| 买家：武钰斐 | `0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6` |
+| 卖家：杨燊杰 | `0x92b0f84D625437245c3296012A0784d10C560309` |
+| 仲裁人：苏佳豪 | `0x8c1f39320b2Dabf58eCeaD5225931674d558d3eD` |
 
-按日更新进展；测试、截图、链上回执尚未取得时，不将对应任务标为完成。
+Escrow 部署区块为 2673049。本轮正常订单实际 ID 为 4，争议订单实际 ID 为 5，金额均为 30 WYF；它们分别对应任务书的正常、争议场景。历史订单 0—3 继续保留。
+
+## 路线 B 功能与代码
+
+| 功能 | 主要文件（相对 `packages/nextjs/`） |
+|---|---|
+| 页面、账户与角色、订单详情 | `app/escrow/page.tsx` |
+| 从 OrderCreated 发现订单，每段最多查 10 个区块 | `hooks/escrow/useEscrowOrders.ts`、`utils/escrow/creationIndex.ts` |
+| 列表与文字状态 | `components/escrow/OrderList.tsx`、`utils/escrow/orderStatus.ts` |
+| 创建表单、18 位金额、分钟转换 | `components/escrow/CreateOrderForm.tsx`、`utils/escrow/orderForm.ts` |
+| 一键授权及付款、确认后发送下一笔 | `components/escrow/PaymentAction.tsx`、`utils/escrow/paymentFlow.ts` |
+| 确认、争议、仲裁及角色权限 | `components/escrow/LifecycleActions.tsx`、`utils/escrow/orderPermissions.ts` |
+| 钱包写操作及交易回执 | `hooks/escrow/useEscrowActions.ts`、`components/escrow/WriteProgress.tsx` |
+
+`approve` 只设置额度；授权交易确认成功后才发送 `deposit`。Paid 状态下，买家可确认或争议，卖家只能争议；Disputed 状态下，只有合约记录的仲裁人显示两个裁决按钮。前端显示规则不能代替合约中的账户和状态检查。
+
+首次打开页面需要从部署区块分段同步事件。该过程受公共 RPC 响应速度影响，已有订单可先查看。保持页面打开可保留当前同步进度；刷新会重新建立内存索引。`Failed to fetch`、RPC 超时或钱包无法连接时，先检查网络并查看是否已有交易哈希，恢复后核对订单状态，避免重复提交。
+
+## 验收结果与原始截图
+
+三名成员使用各自角色钱包通过本组页面操作，相关截图见 [路线 B 验收材料](docs/evidence/B/README.md)。正常订单 #4 的最终状态为 Completed；争议订单 #5 由卖家发起争议，仲裁人裁定退给买家，最终状态为 Refunded。
+
+金额的原始值为 `30000000000000000000`，按 18 位精度换算为 30 WYF。本组创建时设置 120 分钟的到期窗口，报告保留实际时间，不替换成教程示例的 30 分钟。
+
+## 交易记录
+
+下表只记录路线 B。授权交易的目标是 WYFToken，授权支出者为 B Escrow；其他业务交易的目标为 B Escrow。订单编号均为实际链上编号。
+
+| 操作 | 交易哈希及浏览器链接 | 发起账户 |
+|---|---|---|
+| B 部署 Escrow | [0x7cb22a0da3735a5caed06db50f7c048703ca5e8468baca998b09d9e52a3288dc](https://scan-testnet.potos.hk/tx/0x7cb22a0da3735a5caed06db50f7c048703ca5e8468baca998b09d9e52a3288dc) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B createOrder 正常订单 #4 | [0x4d77be393ee3c121af13e2c33b6047beff36090fcd14fcd36bd9957544df8062](https://scan-testnet.potos.hk/tx/0x4d77be393ee3c121af13e2c33b6047beff36090fcd14fcd36bd9957544df8062) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B approve 正常订单付款授权 30 WYF | [0x77c85dc2f5a7ec69fc0f105ffe58dc965266929ff3d5787f431909750cd77e3e](https://scan-testnet.potos.hk/tx/0x77c85dc2f5a7ec69fc0f105ffe58dc965266929ff3d5787f431909750cd77e3e) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B deposit 正常订单 #4 | [0x61747c4a6dc1d368d06ed12fe2ba9634737f93a70faa0f20e66e42b86a2afc70](https://scan-testnet.potos.hk/tx/0x61747c4a6dc1d368d06ed12fe2ba9634737f93a70faa0f20e66e42b86a2afc70) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B createOrder 争议订单 #5 | [0x91b39590b1c53d7b240f0e8f3ce673f98fde4bc4220345ad1bbafa33b34f715c](https://scan-testnet.potos.hk/tx/0x91b39590b1c53d7b240f0e8f3ce673f98fde4bc4220345ad1bbafa33b34f715c) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B approve 争议订单付款授权 30 WYF | [0x6ca4306610cd22507f692fa4073724349e797539a1acee8f68a76083c63a89f5](https://scan-testnet.potos.hk/tx/0x6ca4306610cd22507f692fa4073724349e797539a1acee8f68a76083c63a89f5) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B deposit 争议订单 #5 | [0x97d804cc7bf9ba74b46ba9ed81a040b06e5bf7da28e20f8b51f3e72614dc35b2](https://scan-testnet.potos.hk/tx/0x97d804cc7bf9ba74b46ba9ed81a040b06e5bf7da28e20f8b51f3e72614dc35b2) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B dispute 争议订单 #5 | [0xfee09bfcfeaa191820e10583b880113fb78d4a8ff969d32e6fad77b11fd61dc7](https://scan-testnet.potos.hk/tx/0xfee09bfcfeaa191820e10583b880113fb78d4a8ff969d32e6fad77b11fd61dc7) | 0x92b0f84D625437245c3296012A0784d10C560309 |
+| B resolve 争议订单 #5 退给买家 | [0x5694b3f8026bb4ebc081b8384ec6258bc4bb00a36b661715a678eececae3b5aa](https://scan-testnet.potos.hk/tx/0x5694b3f8026bb4ebc081b8384ec6258bc4bb00a36b661715a678eececae3b5aa) | 0x8c1f39320b2Dabf58eCeaD5225931674d558d3eD |
+| B confirm 正常订单 #4 | [0xdf4e747ab8f1296e003b22408d3c71329dcf9606165d2d18deffbaf424212e31](https://scan-testnet.potos.hk/tx/0xdf4e747ab8f1296e003b22408d3c71329dcf9606165d2d18deffbaf424212e31) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+
+## 检查命令
+
+```bash
+yarn compile
+yarn test
+yarn next:check-types
+yarn hardhat:check-types
+```
+
+测试包括合约托管流程及权限、10 区块日志分页、金额与到期时间校验、授权确认顺序、拒绝或失败交易、按角色显示操作等。检查结果记录在 [验证记录](docs/VERIFICATION.md)，本地测试结果不代替测试网交易证据。
+
+## 实际分工
+
+| 成员 | 工作与对应文件/材料 |
+|---|---|
+| 武钰斐 | 项目统筹、B 前端实现与联调、买家验收、截图及报告整合；负责上述 `app/escrow`、`components/escrow`、`hooks/escrow`、`utils/escrow` 等文件 |
+| 苏佳豪 | A 后端开发，后续通过 PR 提交；B 中使用本人原仲裁钱包完成裁决及相关验收 |
+| 杨燊杰 | B 卖家钱包操作、发起争议、配合角色权限对比及验收截图 |
+
+开发与排错过程中使用了 AI 辅助，报告的“AI 使用说明”记录工具用途及纠错过程。实际钱包交易、成员分工和截图均以本组实验记录为准。
+
+## 来源与许可
+
+前端工程基于 [Scaffold-ETH 2](https://github.com/scaffold-eth/scaffold-eth-2)，保留原项目的 [许可文件](LICENCE)。本组在其基础上实现课程托管业务页面、业务测试和 POTOS 网络配置。
