@@ -1,2 +1,26 @@
-# Runtime event checkpoints contain public chain data and are regenerated locally.
+# Local runtime data and build output
 .escrow-event-index/
+.gradle/
+build/
+*.log
+
+# Local credentials
+.env
+.env.*
+!.env.example
+application-local.properties
+*.jks
+*.p12
+*.pem
+
+# Editor and temporary files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+~$*
+tmp/
+
+# Local assistant workspace
+.codex/
+.agents/
