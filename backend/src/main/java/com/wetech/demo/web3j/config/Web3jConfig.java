@@ -48,7 +48,9 @@ public class Web3jConfig {
         if (scalar.signum() <= 0 || scalar.compareTo(org.web3j.crypto.Sign.CURVE_PARAMS.getN()) >= 0) {
             throw new IllegalStateException("Set WEB3J_PRIVATE_KEY to a valid 32-byte private key");
         }
-        return Credentials.create(normalized);
+        Credentials credentials = Credentials.create(normalized);
+        log.info("Backend signer address: {}", credentials.getAddress());
+        return credentials;
     }
 
     @Bean

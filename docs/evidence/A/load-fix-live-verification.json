@@ -1,0 +1,42 @@
+{
+  "loaded": {
+    "contractAddress": "0x793d08836c2e00af0bde963386f36e00acee180f",
+    "arbiter": "0x3391215304d3f41892d973e70d18c5642068ae51",
+    "fromBlock": "2832142",
+    "chainId": "60600",
+    "transactionHash": null,
+    "blockNumber": null,
+    "status": null,
+    "gasUsed": null
+  },
+  "orders": [
+    {
+      "id": "0",
+      "buyer": "0x898ed6f95ef783ad4292d5ff2351f2dc7936adf6",
+      "seller": "0x92b0f84d625437245c3296012a0784d10c560309",
+      "token": "0x81777ceea8cc59fa88abcee9dc19970217cf8637",
+      "amount": "30000000000000000000",
+      "deadline": "1794070422",
+      "status": "Paid",
+      "description": "A-NORMAL"
+    },
+    {
+      "id": "1",
+      "buyer": "0x898ed6f95ef783ad4292d5ff2351f2dc7936adf6",
+      "seller": "0x92b0f84d625437245c3296012a0784d10c560309",
+      "token": "0x81777ceea8cc59fa88abcee9dc19970217cf8637",
+      "amount": "30000000000000000000",
+      "deadline": "1794070422",
+      "status": "Disputed",
+      "description": "A-DISPUTE"
+    }
+  ],
+  "wrongBlockStatus": 400,
+  "wrongBlockResponse": {
+    "code": "INVALID_PARAMETER",
+    "message": "fromBlock must contain the contract deployment transaction"
+  },
+  "previousContextPreserved": true,
+  "verificationPort": 18080,
+  "note": "Read-only live verification using disposable signer; existing user service on 8080 untouched."
+}

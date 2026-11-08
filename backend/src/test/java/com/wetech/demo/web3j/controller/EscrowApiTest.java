@@ -29,7 +29,9 @@ class EscrowApiTest {
     Credentials account;
     volatile String chain="0xecb8", raw;
     volatile boolean failedReceipt, pendingReceipt, logError, noCode, incompatible, wrongHash;
+    volatile boolean historicalCodeReturnsLatest, badCreationReceipt;
     final String hash="0x"+"a".repeat(64);
+    final String creationHash="0x"+"b".repeat(64);
 
     @BeforeEach void start() throws Exception {
         account=Credentials.create(Keys.createEcKeyPair());
@@ -40,10 +42,11 @@ class EscrowApiTest {
             Object result=switch(method) {
                 case "eth_chainId" -> chain;
                 case "eth_blockNumber" -> "0x1d";
-                case "eth_getCode" -> noCode || (!q.path("params").get(1).asText().equals("latest") && Numeric.decodeQuantity(q.path("params").get(1).asText()).intValue()<5) ? "0x" : "0x6000";
+                case "eth_getCode" -> noCode || (!historicalCodeReturnsLatest && !q.path("params").get(1).asText().equals("latest") && Numeric.decodeQuantity(q.path("params").get(1).asText()).intValue()<5) ? "0x" : "0x6000";
+                case "eth_getBlockByNumber" -> deploymentBlock(q.path("params").get(0).asText());
                 case "eth_getTransactionCount" -> "0x0";
                 case "eth_sendRawTransaction" -> {raw=q.path("params").get(0).asText();yield wrongHash ? hash : Hash.sha3(raw);}
-                case "eth_getTransactionReceipt" -> pendingReceipt ? null : receipt();
+                case "eth_getTransactionReceipt" -> q.path("params").get(0).asText().equals(creationHash) ? creationReceipt() : pendingReceipt ? null : receipt();
                 case "eth_call" -> call(q.path("params").get(0));
                 case "eth_getLogs" -> logs(q.path("params").get(0));
                 default -> throw new IllegalStateException("Unexpected RPC method "+method);
@@ -56,6 +59,21 @@ class EscrowApiTest {
         });server.start();
     }
     @AfterEach void stop(){server.stop(0);}
+    Object deploymentBlock(String number){
+        Map<String,Object> block=new LinkedHashMap<>();
+        block.put("number",number);block.put("hash",hash);
+        Map<String,Object> tx=new LinkedHashMap<>();
+        tx.put("hash",creationHash);tx.put("to",null);tx.put("from",account.getAddress());
+        block.put("transactions",Numeric.decodeQuantity(number).intValue()==5 ? List.of(tx) : List.of());
+        return block;
+    }
+    Object creationReceipt(){
+        Map<String,Object> r=new LinkedHashMap<>();
+        r.put("transactionHash",creationHash);r.put("blockHash",hash);
+        r.put("blockNumber",badCreationReceipt?"0x6":"0x5");r.put("status","0x1");
+        r.put("contractAddress",ADDRESS);r.put("to",null);r.put("logs",List.of());
+        return r;
+    }
     Object receipt(){
         Map<String,Object> r=new LinkedHashMap<>();
         r.put("transactionHash",Hash.sha3(raw));r.put("transactionIndex","0x0");r.put("blockHash",hash);r.put("blockNumber","0x1d");
@@ -87,6 +105,26 @@ class EscrowApiTest {
     void load(MockMvc m)throws Exception{assertThat(m.perform(post("/api/escrow/load").param("address",ADDRESS).param("fromBlock","5")).andReturn().getResponse().getStatus()).isEqualTo(200);}
 
     @Test void unloadedReturnsConflict(){context().run(c->{var m=mvc(c);assertThat(m.perform(get("/api/escrow/address")).andReturn().getResponse().getStatus()).isEqualTo(409);});}
+    @Test void loadWorksWhenHistoricalCodeQueriesReturnLatestCode(){
+        historicalCodeReturnsLatest=true;
+        context().run(c->{load(mvc(c));assertThat(raw).isNull();});
+    }
+    @Test void historicalCodeQuirkCannotMakeWrongDeploymentBlockValid(){
+        historicalCodeReturnsLatest=true;
+        context().run(c->{var m=mvc(c);
+            for(String block:List.of("4","6")){
+                var r=m.perform(post("/api/escrow/load").param("address",ADDRESS).param("fromBlock",block)).andReturn();
+                assertThat(r.getResponse().getStatus()).isEqualTo(400);
+            }
+            assertThat(raw).isNull();
+        });
+    }
+    @Test void creationReceiptMustMatchTheRequestedBlock(){
+        badCreationReceipt=true;
+        context().run(c->{var r=mvc(c).perform(post("/api/escrow/load").param("address",ADDRESS).param("fromBlock","5")).andReturn();
+            assertThat(r.getResponse().getStatus()).isEqualTo(400);assertThat(raw).isNull();
+        });
+    }
     @Test void loadAndReadOrderUseStringsAndStatusNames(){context().run(c->{var m=mvc(c);load(m);var r=m.perform(get("/api/escrow/orders/0")).andReturn();assertThat(r.getResponse().getStatus()).isEqualTo(200);var b=body(r);assertThat(b.path("amount").isTextual()).isTrue();assertThat(b.path("amount").asText()).isEqualTo("30000000000000000000");assertThat(b.path("status").asText()).isEqualTo("Paid");assertThat(body(m.perform(get("/api/escrow/address")).andReturn()).path("contractAddress").asText()).isEqualTo(ADDRESS);});}
     @Test void deploymentUsesBackendSignerAsArbiter(){context().run(c->{var r=mvc(c).perform(post("/api/escrow/deploy")).andReturn();assertThat(r.getResponse().getStatus()).isEqualTo(200);assertThat(body(r).path("contractAddress").asText()).isEqualTo(OTHER);var tx=(SignedRawTransaction)TransactionDecoder.decode(raw);assertThat(tx.getFrom()).isEqualToIgnoringCase(account.getAddress());assertThat(tx.getData()).endsWith(TypeEncoder.encode(new Address(account.getAddress())));assertThat(body(r).path("status").asText()).isEqualTo("0x1");});}
     @Test void listScansTenBlockRangesAndDeduplicatesEvents(){context().run(c->{var m=mvc(c);load(m);var r=m.perform(get("/api/escrow/orders")).andReturn();assertThat(r.getResponse().getStatus()).isEqualTo(200);assertThat(body(r).size()).isEqualTo(3);assertThat(body(r).get(0).path("id").asText()).isEqualTo("5");var ranges=calls.stream().filter(q->q.path("method").asText().equals("eth_getLogs")).map(q->q.path("params").get(0)).toList();assertThat(ranges).hasSize(3);assertThat(ranges.get(0).path("fromBlock").asText()).isEqualTo("0x5");assertThat(ranges.get(0).path("toBlock").asText()).isEqualTo("0xe");});}

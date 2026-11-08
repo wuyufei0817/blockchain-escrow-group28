@@ -76,10 +76,7 @@ public class EscrowService {
             BigInteger head = checked(web3j.ethBlockNumber().send()).getBlockNumber();
             if (fromBlock.compareTo(head) > 0) throw bad("fromBlock is beyond the current block");
             if (emptyCode(code(address, DefaultBlockParameterName.LATEST))) throw bad("No contract code at this address");
-            if (emptyCode(code(address, DefaultBlockParameter.valueOf(fromBlock)))) throw bad("fromBlock is before deployment");
-            if (fromBlock.signum() > 0 && !emptyCode(code(address, DefaultBlockParameter.valueOf(fromBlock.subtract(BigInteger.ONE))))) {
-                throw bad("fromBlock must be the contract deployment block");
-            }
+            verifyDeploymentBlock(address, fromBlock);
             Escrow contract = Escrow.load(address, web3j, transactions, gas);
             String arbiter;
             try {
@@ -219,6 +216,33 @@ public class EscrowService {
         EthChainId response = checked(web3j.ethChainId().send());
         if (!chainId.equals(response.getChainId())) throw new IOException("RPC chain ID mismatch");
     }
+    private void verifyDeploymentBlock(String address, BigInteger fromBlock) throws IOException {
+        // POTOS currently returns latest code even for historical eth_getCode queries.
+        // Prove the creation block with a top-level creation transaction and its receipt.
+        EthBlock.Block block = checked(web3j.ethGetBlockByNumber(
+                DefaultBlockParameter.valueOf(fromBlock), true).send()).getBlock();
+        if (block == null || !fromBlock.equals(block.getNumber()) || block.getHash() == null
+                || block.getTransactions() == null) throw new IOException("Missing deployment block");
+        for (EthBlock.TransactionResult<?> result : block.getTransactions()) {
+            if (!(result.get() instanceof EthBlock.TransactionObject transaction)) {
+                throw new IOException("Missing full block transactions");
+            }
+            if (transaction.getTo() != null && !transaction.getTo().isEmpty()) continue;
+            if (transaction.getHash() == null) throw new IOException("Missing creation transaction hash");
+            TransactionReceipt receipt = checked(web3j.ethGetTransactionReceipt(transaction.getHash()).send())
+                    .getTransactionReceipt().orElseThrow(() -> new IOException("Missing creation receipt"));
+            if (!address.equalsIgnoreCase(receipt.getContractAddress())) continue;
+            if (!receipt.isStatusOK() || !fromBlock.equals(receipt.getBlockNumber())
+                    || !block.getHash().equalsIgnoreCase(receipt.getBlockHash())
+                    || !transaction.getHash().equalsIgnoreCase(receipt.getTransactionHash())
+                    || (receipt.getTo() != null && !receipt.getTo().isEmpty())) {
+                throw bad("Creation receipt does not match the deployment block");
+            }
+            return;
+        }
+        throw bad("fromBlock must contain the contract deployment transaction");
+    }
+
     private String code(String address, DefaultBlockParameter block) throws IOException { return checked(web3j.ethGetCode(address, block).send()).getCode(); }
     private boolean emptyCode(String value) { return value == null || value.matches("0x0*"); }
     private Context required() {
