@@ -95,18 +95,18 @@ Escrow 部署区块为 2673049。本轮正常订单实际 ID 为 4，争议订�
 
 下表只记录路线 B。授权交易的目标是 WYFToken，授权支出者为 B Escrow；其他业务交易的目标为 B Escrow。订单编号均为实际链上编号。
 
-| 操作 | 交易哈希及浏览器链接 | 发起账户 |
-|---|---|---|
-| B 部署 Escrow | [0x7cb22a0da3735a5caed06db50f7c048703ca5e8468baca998b09d9e52a3288dc](https://scan-testnet.potos.hk/tx/0x7cb22a0da3735a5caed06db50f7c048703ca5e8468baca998b09d9e52a3288dc) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
-| B createOrder 正常订单 #4 | [0x4d77be393ee3c121af13e2c33b6047beff36090fcd14fcd36bd9957544df8062](https://scan-testnet.potos.hk/tx/0x4d77be393ee3c121af13e2c33b6047beff36090fcd14fcd36bd9957544df8062) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
-| B approve 正常订单付款授权 30 WYF | [0x77c85dc2f5a7ec69fc0f105ffe58dc965266929ff3d5787f431909750cd77e3e](https://scan-testnet.potos.hk/tx/0x77c85dc2f5a7ec69fc0f105ffe58dc965266929ff3d5787f431909750cd77e3e) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
-| B deposit 正常订单 #4 | [0x61747c4a6dc1d368d06ed12fe2ba9634737f93a70faa0f20e66e42b86a2afc70](https://scan-testnet.potos.hk/tx/0x61747c4a6dc1d368d06ed12fe2ba9634737f93a70faa0f20e66e42b86a2afc70) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
-| B createOrder 争议订单 #5 | [0x91b39590b1c53d7b240f0e8f3ce673f98fde4bc4220345ad1bbafa33b34f715c](https://scan-testnet.potos.hk/tx/0x91b39590b1c53d7b240f0e8f3ce673f98fde4bc4220345ad1bbafa33b34f715c) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
-| B approve 争议订单付款授权 30 WYF | [0x6ca4306610cd22507f692fa4073724349e797539a1acee8f68a76083c63a89f5](https://scan-testnet.potos.hk/tx/0x6ca4306610cd22507f692fa4073724349e797539a1acee8f68a76083c63a89f5) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
-| B deposit 争议订单 #5 | [0x97d804cc7bf9ba74b46ba9ed81a040b06e5bf7da28e20f8b51f3e72614dc35b2](https://scan-testnet.potos.hk/tx/0x97d804cc7bf9ba74b46ba9ed81a040b06e5bf7da28e20f8b51f3e72614dc35b2) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
-| B dispute 争议订单 #5 | [0xfee09bfcfeaa191820e10583b880113fb78d4a8ff969d32e6fad77b11fd61dc7](https://scan-testnet.potos.hk/tx/0xfee09bfcfeaa191820e10583b880113fb78d4a8ff969d32e6fad77b11fd61dc7) | 0x92b0f84D625437245c3296012A0784d10C560309 |
-| B resolve 争议订单 #5 退给买家 | [0x5694b3f8026bb4ebc081b8384ec6258bc4bb00a36b661715a678eececae3b5aa](https://scan-testnet.potos.hk/tx/0x5694b3f8026bb4ebc081b8384ec6258bc4bb00a36b661715a678eececae3b5aa) | 0x8c1f39320b2Dabf58eCeaD5225931674d558d3eD |
-| B confirm 正常订单 #4 | [0xdf4e747ab8f1296e003b22408d3c71329dcf9606165d2d18deffbaf424212e31](https://scan-testnet.potos.hk/tx/0xdf4e747ab8f1296e003b22408d3c71329dcf9606165d2d18deffbaf424212e31) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| 操作 | 交易哈希 | 区块浏览器链接 | 发起账户 |
+|---|---|---|---|
+| 实验3部署 Escrow（路线 B） | 0x7cb22a0da3735a5caed06db50f7c048703ca5e8468baca998b09d9e52a3288dc | [查看交易](https://scan-testnet.potos.hk/tx/0x7cb22a0da3735a5caed06db50f7c048703ca5e8468baca998b09d9e52a3288dc) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B createOrder 正常订单 #4 | 0x4d77be393ee3c121af13e2c33b6047beff36090fcd14fcd36bd9957544df8062 | [查看交易](https://scan-testnet.potos.hk/tx/0x4d77be393ee3c121af13e2c33b6047beff36090fcd14fcd36bd9957544df8062) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B approve 正常订单付款授权 30 WYF | 0x77c85dc2f5a7ec69fc0f105ffe58dc965266929ff3d5787f431909750cd77e3e | [查看交易](https://scan-testnet.potos.hk/tx/0x77c85dc2f5a7ec69fc0f105ffe58dc965266929ff3d5787f431909750cd77e3e) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B deposit 正常订单 #4 | 0x61747c4a6dc1d368d06ed12fe2ba9634737f93a70faa0f20e66e42b86a2afc70 | [查看交易](https://scan-testnet.potos.hk/tx/0x61747c4a6dc1d368d06ed12fe2ba9634737f93a70faa0f20e66e42b86a2afc70) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B createOrder 争议订单 #5 | 0x91b39590b1c53d7b240f0e8f3ce673f98fde4bc4220345ad1bbafa33b34f715c | [查看交易](https://scan-testnet.potos.hk/tx/0x91b39590b1c53d7b240f0e8f3ce673f98fde4bc4220345ad1bbafa33b34f715c) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B approve 争议订单付款授权 30 WYF | 0x6ca4306610cd22507f692fa4073724349e797539a1acee8f68a76083c63a89f5 | [查看交易](https://scan-testnet.potos.hk/tx/0x6ca4306610cd22507f692fa4073724349e797539a1acee8f68a76083c63a89f5) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B deposit 争议订单 #5 | 0x97d804cc7bf9ba74b46ba9ed81a040b06e5bf7da28e20f8b51f3e72614dc35b2 | [查看交易](https://scan-testnet.potos.hk/tx/0x97d804cc7bf9ba74b46ba9ed81a040b06e5bf7da28e20f8b51f3e72614dc35b2) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| B dispute 争议订单 #5 | 0xfee09bfcfeaa191820e10583b880113fb78d4a8ff969d32e6fad77b11fd61dc7 | [查看交易](https://scan-testnet.potos.hk/tx/0xfee09bfcfeaa191820e10583b880113fb78d4a8ff969d32e6fad77b11fd61dc7) | 0x92b0f84D625437245c3296012A0784d10C560309 |
+| B resolve 争议订单 #5 退给买家 | 0x5694b3f8026bb4ebc081b8384ec6258bc4bb00a36b661715a678eececae3b5aa | [查看交易](https://scan-testnet.potos.hk/tx/0x5694b3f8026bb4ebc081b8384ec6258bc4bb00a36b661715a678eececae3b5aa) | 0x8c1f39320b2Dabf58eCeaD5225931674d558d3eD |
+| B confirm 正常订单 #4 | 0xdf4e747ab8f1296e003b22408d3c71329dcf9606165d2d18deffbaf424212e31 | [查看交易](https://scan-testnet.potos.hk/tx/0xdf4e747ab8f1296e003b22408d3c71329dcf9606165d2d18deffbaf424212e31) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
 
 ### 检查命令
 
@@ -219,23 +219,23 @@ Invoke-RestMethod -Method Get -Uri "http://localhost:8080/api/escrow/orders" | C
 
 以下八项按报告主表排列；链接中的完整哈希和区块均来自真实回执，发起账户的完整地址见上表。
 
-| 操作 | 完整交易哈希及浏览器链接 | 区块 | status | 发起账户 |
-|---|---|---|---|---|
-| 部署 Escrow | [0x31cccc6d5e12d955b00e2e48ce5ec173ea9b6f420bb568a5248b9cbe63db27e6](https://scan-testnet.potos.hk/tx/0x31cccc6d5e12d955b00e2e48ce5ec173ea9b6f420bb568a5248b9cbe63db27e6) | 2832142 | 0x1 | BE |
-| createOrder 订单0 | [0x944e176605765a331256582d6099b52a0303e50884f2c3b4d2e9e7d1bca18b02](https://scan-testnet.potos.hk/tx/0x944e176605765a331256582d6099b52a0303e50884f2c3b4d2e9e7d1bca18b02) | 2835064 | 0x1 | 买家 |
-| approve 60枚WYF | [0x26b5a208e24b0911f2dbb01b45ebb0edd38e5bc4f77bb8d3e84a45c47bd6a406](https://scan-testnet.potos.hk/tx/0x26b5a208e24b0911f2dbb01b45ebb0edd38e5bc4f77bb8d3e84a45c47bd6a406) | 2835186 | 0x1 | 买家 |
-| deposit 订单0 | [0x8f52d16a4f28f4931b46727a4915635a44db741cc38682c485399dbd0c54f57d](https://scan-testnet.potos.hk/tx/0x8f52d16a4f28f4931b46727a4915635a44db741cc38682c485399dbd0c54f57d) | 2835211 | 0x1 | 买家 |
-| dispute 订单1 | [0x0882e460b0b76906dd347b7c1ffb3a4808b842cea5d7285d049668f50af55670](https://scan-testnet.potos.hk/tx/0x0882e460b0b76906dd347b7c1ffb3a4808b842cea5d7285d049668f50af55670) | 2841098 | 0x1 | 卖家 |
-| resolve 订单1，退款 | [0xa161d794996043964f33938e2d813ca238f2a996c3ece95c8e67134e3899f813](https://scan-testnet.potos.hk/tx/0xa161d794996043964f33938e2d813ca238f2a996c3ece95c8e67134e3899f813) | 2842245 | 0x1 | BE |
-| confirm 订单0 | [0x96cbe681312bf74aadf80a7606f3ca93e2c5fbb564452eb88b853dab9b463d73](https://scan-testnet.potos.hk/tx/0x96cbe681312bf74aadf80a7606f3ca93e2c5fbb564452eb88b853dab9b463d73) | 2843225 | 0x1 | 买家 |
-| resolve 订单0，预期失败 | [0x63f9f67706ab2a51fa2a157288cde58879707e7fba77d430d083d718ec1f304e](https://scan-testnet.potos.hk/tx/0x63f9f67706ab2a51fa2a157288cde58879707e7fba77d430d083d718ec1f304e) | 2842225 | 0x0 | BE |
+| 操作 | 交易哈希 | 区块浏览器链接 | 发起账户 |
+|---|---|---|---|
+| 部署 Escrow（路线 A） | 0x31cccc6d5e12d955b00e2e48ce5ec173ea9b6f420bb568a5248b9cbe63db27e6 | [查看交易](https://scan-testnet.potos.hk/tx/0x31cccc6d5e12d955b00e2e48ce5ec173ea9b6f420bb568a5248b9cbe63db27e6) | 0x3391215304d3F41892d973e70D18c5642068ae51 |
+| createOrder 订单0 | 0x944e176605765a331256582d6099b52a0303e50884f2c3b4d2e9e7d1bca18b02 | [查看交易](https://scan-testnet.potos.hk/tx/0x944e176605765a331256582d6099b52a0303e50884f2c3b4d2e9e7d1bca18b02) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| approve 60枚WYF | 0x26b5a208e24b0911f2dbb01b45ebb0edd38e5bc4f77bb8d3e84a45c47bd6a406 | [查看交易](https://scan-testnet.potos.hk/tx/0x26b5a208e24b0911f2dbb01b45ebb0edd38e5bc4f77bb8d3e84a45c47bd6a406) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| deposit 订单0 | 0x8f52d16a4f28f4931b46727a4915635a44db741cc38682c485399dbd0c54f57d | [查看交易](https://scan-testnet.potos.hk/tx/0x8f52d16a4f28f4931b46727a4915635a44db741cc38682c485399dbd0c54f57d) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| dispute 订单1 | 0x0882e460b0b76906dd347b7c1ffb3a4808b842cea5d7285d049668f50af55670 | [查看交易](https://scan-testnet.potos.hk/tx/0x0882e460b0b76906dd347b7c1ffb3a4808b842cea5d7285d049668f50af55670) | 0x92b0f84D625437245c3296012A0784d10C560309 |
+| resolve 订单1，退款 | 0xa161d794996043964f33938e2d813ca238f2a996c3ece95c8e67134e3899f813 | [查看交易](https://scan-testnet.potos.hk/tx/0xa161d794996043964f33938e2d813ca238f2a996c3ece95c8e67134e3899f813) | 0x3391215304d3F41892d973e70D18c5642068ae51 |
+| confirm 订单0 | 0x96cbe681312bf74aadf80a7606f3ca93e2c5fbb564452eb88b853dab9b463d73 | [查看交易](https://scan-testnet.potos.hk/tx/0x96cbe681312bf74aadf80a7606f3ca93e2c5fbb564452eb88b853dab9b463d73) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| resolve 订单0，预期失败 | 0x63f9f67706ab2a51fa2a157288cde58879707e7fba77d430d083d718ec1f304e | [查看交易](https://scan-testnet.potos.hk/tx/0x63f9f67706ab2a51fa2a157288cde58879707e7fba77d430d083d718ec1f304e) | 0x3391215304d3F41892d973e70D18c5642068ae51 |
 
 第二笔订单的补充记录：
 
-| 操作 | 完整交易哈希及浏览器链接 | 区块 | status | 发起账户 |
-|---|---|---|---|---|
-| createOrder 订单1 | [0x191cf6168604617bc7e0f0c95ed42a2360319698f996d91e7a6d3006e0492d7c](https://scan-testnet.potos.hk/tx/0x191cf6168604617bc7e0f0c95ed42a2360319698f996d91e7a6d3006e0492d7c) | 2835118 | 0x1 | 买家 |
-| deposit 订单1 | [0x4144b15dc3641391b7a051566189aa8fd971ac1c7c89b24ca45b85ea4b5f9c80](https://scan-testnet.potos.hk/tx/0x4144b15dc3641391b7a051566189aa8fd971ac1c7c89b24ca45b85ea4b5f9c80) | 2835232 | 0x1 | 买家 |
+| 操作 | 交易哈希 | 区块浏览器链接 | 发起账户 |
+|---|---|---|---|
+| createOrder 订单1 | 0x191cf6168604617bc7e0f0c95ed42a2360319698f996d91e7a6d3006e0492d7c | [查看交易](https://scan-testnet.potos.hk/tx/0x191cf6168604617bc7e0f0c95ed42a2360319698f996d91e7a6d3006e0492d7c) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
+| deposit 订单1 | 0x4144b15dc3641391b7a051566189aa8fd971ac1c7c89b24ca45b85ea4b5f9c80 | [查看交易](https://scan-testnet.potos.hk/tx/0x4144b15dc3641391b7a051566189aa8fd971ac1c7c89b24ca45b85ea4b5f9c80) | 0x898Ed6F95ef783aD4292D5fF2351f2DC7936ADF6 |
 
 失败仲裁实际gasUsed为25889，成功退款为62917，确认收货为62549。失败回执status为0x0；它已上链但未改变业务状态。POTOS失败回执的effectiveGasPrice为0，执行gas用量与实际扣款金额须区分。
 
