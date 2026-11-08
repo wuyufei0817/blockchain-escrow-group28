@@ -1,3 +1,43 @@
+# dependencies
+node_modules
+
+# yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# eslint
+.eslintcache
+
+# misc
+.DS_Store
+
+# IDE
+.vscode
+.idea
+
+# cli
+dist
+
+# Local credentials and generated output
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.keystore
+**/artifacts/
+**/cache/
+**/typechain-types/
+**/.next/
+**/coverage/
+**/*.tsbuildinfo
+**/deployments/localhost/
+
+# Java backend and local working files
 # Local runtime data and build output
 .escrow-event-index/
 .gradle/

@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.woff binary
+*.woff2 binary
+# Preserve whitespace inside the bundled Yarn distribution and plugins.
+.yarn/** -whitespace
