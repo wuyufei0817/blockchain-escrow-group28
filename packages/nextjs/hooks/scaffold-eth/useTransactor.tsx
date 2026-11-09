@@ -6,6 +6,7 @@ import scaffoldConfig from "~~/scaffold.config";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 import { AllowedChainIds, getBlockExplorerTxLink, notification } from "~~/utils/scaffold-eth";
 import { TransactorFuncOptions, getParsedErrorWithAllAbis } from "~~/utils/scaffold-eth/contract";
+import { TransactionRevertedError } from "~~/utils/scaffold-eth/transactionError";
 
 type TransactionFunc = (
   tx: (() => Promise<Hash>) | Parameters<SendTransactionMutate<Config, undefined>>[0],
@@ -75,13 +76,23 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
         <TxnNotification message="Waiting for transaction to complete." blockExplorerLink={blockExplorerTxURL} />,
       );
 
+      let businessCallReplaced = false;
       transactionReceipt = await publicClient.waitForTransactionReceipt({
         hash: transactionHash,
         confirmations: options?.blockConfirmations,
+        onReplaced: replacement => {
+          // viem classifies identical to/value/input as repriced. Other replacements
+          // (including wallet Cancel self-transfers) did not execute this call.
+          if (replacement.reason !== "repriced") businessCallReplaced = true;
+        },
       });
       notification.remove(notificationId);
+      blockExplorerTxURL = getBlockExplorerTxLink(chainId, transactionReceipt.transactionHash);
 
-      if (transactionReceipt.status === "reverted") throw new Error("Transaction reverted");
+      if (businessCallReplaced) {
+        throw new Error(`交易已取消或被其他交易替换，原操作未完成。请核对交易：${transactionReceipt.transactionHash}`);
+      }
+      if (transactionReceipt.status === "reverted") throw new TransactionRevertedError(transactionReceipt);
 
       notification.success(
         <TxnNotification message="Transaction completed successfully!" blockExplorerLink={blockExplorerTxURL} />,
@@ -108,7 +119,7 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
       throw error;
     }
 
-    return transactionHash;
+    return transactionReceipt?.transactionHash ?? transactionHash;
   };
 
   return result;
