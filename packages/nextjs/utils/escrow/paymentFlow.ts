@@ -1,4 +1,5 @@
 import type { Address, Hash } from "viem";
+import { TransactionRevertedError } from "../scaffold-eth/transactionError";
 
 export type Operation = "createOrder" | "approve" | "deposit" | "confirm" | "dispute" | "resolve";
 export type ChainReceipt = {
@@ -31,7 +32,18 @@ export async function confirmedTransaction<T extends ChainReceipt>(
   receipt: (hash: Hash) => Promise<T>,
   record: (record: TransactionRecord) => void,
 ): Promise<T> {
-  const hash = await send();
+  let hash: Hash | undefined;
+  try {
+    hash = await send();
+  } catch (error) {
+    if (error instanceof TransactionRevertedError) {
+      // The wallet wrapper already received this failure. Retain it even if
+      // a second RPC receipt lookup would be unavailable.
+      record({ operation, ...error.receipt });
+      throw new WalletActionError("链上交易失败，请保留交易哈希核对。");
+    }
+    throw error;
+  }
   if (!hash) throw new WalletActionError("交易未发送，请检查钱包连接与网络。");
   const result = await receipt(hash);
   record({ operation, ...result });
